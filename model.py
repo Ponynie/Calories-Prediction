@@ -6,11 +6,11 @@ import torchmetrics
 from torchvision.models import mobilenet_v2
 
 class MobileNetV2Lightning(pl.LightningModule):
-    def __init__(self, num_classes, pretrained=True, lr=0.001, last_drop=0.2):
+    def __init__(self, num_classes, lr=0.001, last_drop=0.2):
         super().__init__()
         self.save_hyperparameters()
         self.learning_rate = lr
-        self.model = mobilenet_v2(pretrained=pretrained)
+        self.model = mobilenet_v2(weights='DEFAULT')
         self.model.classifier = nn.Sequential(
             nn.Dropout(p=last_drop, inplace=False),
             nn.Linear(self.model.last_channel, num_classes)
@@ -56,6 +56,12 @@ class MobileNetV2Lightning(pl.LightningModule):
         self.log('test_loss', loss)
         self.log('test_acc', acc)
         return loss
+    
+    def predict_step(self, batch, batch_idx, dataloader_idx=None):
+        x, y = batch
+        logits = self(x)
+        preds = torch.argmax(logits, dim=1)
+        return preds
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)

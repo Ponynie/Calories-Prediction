@@ -3,8 +3,12 @@ from model import MobileNetV2Lightning
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_lightning import Trainer
 import properties as pt
+from PIL import Image
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+import torch
 
-def main(hparams):
+def train_model(hparams):
     
     batch_size = hparams['batch_size']
     lr = hparams['lr']
@@ -33,7 +37,27 @@ def main(hparams):
                       callbacks=[lr_monitor, early_stopping])
     
     trainer.fit(model, datamodule=dataModule)
-    
+
+# def test_model():
+#     model = MobileNetV2Lightning.load_from_checkpoint(
+#         checkpoint_path="/path/to/pytorch_checkpoint.ckpt",
+#         hparams_file="/path/to/experiment/version/hparams.yaml",
+#         map_location=None,
+#     )
+
+#     trainer = Trainer(...)
+#     trainer.test(model)
+
+# def predict():
+
+#     model = MobileNetV2Lightning.load_from_checkpoint(PATH)
+#     dataset = WikiText2()
+#     test_dataloader = DataLoader(dataset)
+#     trainer = L.Trainer()
+#     pred = trainer.predict(model, dataloaders=test_dataloader)
+
+#     return pred
+
 if __name__ == '__main__':
     hparams = {
         'batch_size': 64,
@@ -42,4 +66,5 @@ if __name__ == '__main__':
         'max_epochs': 20,
         'patience': 5
     }
-    main(hparams)
+    train_model(hparams)
+
