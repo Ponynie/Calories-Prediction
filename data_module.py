@@ -7,8 +7,6 @@ from PIL import ImageFile
 from torch.utils.data import DataLoader, Dataset
 import pytorch_lightning as pl
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-
-
 class ImageDataset(Dataset):
     def __init__(self, data: pd.DataFrame, transform=None):
         self.data = data

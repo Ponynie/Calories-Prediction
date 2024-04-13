@@ -1,7 +1,7 @@
 from torchvision import transforms
 import os
 
-data_dir = 'data'
+data_dir = 'augmented'
 
 num_classes = len([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
 
