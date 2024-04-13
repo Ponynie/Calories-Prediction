@@ -9,7 +9,7 @@ class MobileNetV2Lightning(pl.LightningModule):
     def __init__(self, num_classes, pretrained=True, lr=0.001, last_drop=0.2):
         super().__init__()
         self.save_hyperparameters()
-        self.lr = lr
+        self.learning_rate = lr
         self.model = mobilenet_v2(pretrained=pretrained)
         self.model.classifier = nn.Sequential(
             nn.Dropout(p=last_drop, inplace=False),
@@ -58,5 +58,6 @@ class MobileNetV2Lightning(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
-        return optimizer
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.90)
+        return [optimizer], [lr_scheduler]

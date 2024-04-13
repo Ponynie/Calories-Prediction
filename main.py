@@ -1,9 +1,8 @@
 from data_module import ImageDataModule
 from model import MobileNetV2Lightning
-from pytorch_lightning.callbacks import EarlyStopping
+from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_lightning import Trainer
-import constant
-import os
+import properties as pt
 
 def main(hparams):
     
@@ -13,31 +12,32 @@ def main(hparams):
     max_epochs = hparams['max_epochs']
     patience = hparams['patience']
     
-    num_classes = constant.num_classes
-    random_state = constant.random_state
-    num_workers = constant.num_workers
-    transform = constant.transform
-    val_split = constant.val_split
-    test_split = constant.test_split
+    num_classes = pt.num_classes
+    random_state = pt.random_state
+    num_workers = pt.num_workers
+    transform = pt.transform
+    val_split = pt.val_split
+    test_split = pt.test_split
+    data_dir = pt.data_dir
     
-    dataModule = ImageDataModule(data_dir='data', batch_size=batch_size, num_workers=num_workers, transform=transform, val_split=val_split, test_split=test_split, random_state=random_state)
+    dataModule = ImageDataModule(data_dir=data_dir, batch_size=batch_size, num_workers=num_workers, transform=transform, val_split=val_split, test_split=test_split, random_state=random_state)
     model = MobileNetV2Lightning(num_classes=num_classes, lr=lr, last_drop=last_drop)
     early_stopping = EarlyStopping(monitor='val_loss', patience=patience)
+    lr_monitor = LearningRateMonitor(logging_interval='epoch')
     
     trainer = Trainer(devices='auto', 
                       accelerator='auto', 
                       max_epochs=max_epochs,
                       logger=True, 
                       enable_checkpointing=True,
-                      callbacks=[early_stopping])
+                      callbacks=[lr_monitor, early_stopping])
     
     trainer.fit(model, datamodule=dataModule)
-    
     
 if __name__ == '__main__':
     hparams = {
         'batch_size': 64,
-        'lr': 0.001,
+        'lr': 0.005,
         'last_drop': 0.2,
         'max_epochs': 20,
         'patience': 5
