@@ -59,11 +59,15 @@ class ImageDataModule(pl.LightningDataModule):
         labels = []
         class_dirs = [d for d in os.listdir(self.data_dir) if os.path.isdir(os.path.join(self.data_dir, d))]
         class_names = sorted(class_dirs)
+
         for idx, class_name in enumerate(class_names):
             class_dir = os.path.join(self.data_dir, class_name)
             for img_path in os.listdir(class_dir):
+                if img_path == '.DS_Store':  # Skip .DS_Store files
+                    continue
                 image_path = os.path.join(class_dir, img_path)
                 image_paths.append(image_path)
                 labels.append(idx)
+
         data = pd.DataFrame({'image_path': image_paths, 'label': labels})
         return data

@@ -1,0 +1,4 @@
+last_drop: 0.2
+lr: 0.005
+num_classes: 2
+pretrained: true
