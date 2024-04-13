@@ -36,10 +36,10 @@ def main(hparams):
     
 if __name__ == '__main__':
     hparams = {
-        'batch_size': 32,
+        'batch_size': 64,
         'lr': 0.001,
         'last_drop': 0.2,
-        'max_epochs': 100,
-        'patience': 7
+        'max_epochs': 20,
+        'patience': 5
     }
     main(hparams)
