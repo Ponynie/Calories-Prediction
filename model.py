@@ -29,8 +29,8 @@ class MobileNetV2Lightning(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         acc = self.accuracy(preds, y)
 
-        self.log('train_loss', loss)
-        self.log('train_acc', acc)
+        self.log('train_loss', loss, on_step=True, on_epoch=True)
+        self.log('train_acc', acc, prog_bar=True, on_step=True, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -41,8 +41,8 @@ class MobileNetV2Lightning(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         acc = self.accuracy(preds, y)
         
-        self.log('val_loss', loss)
-        self.log('val_acc', acc)
+        self.log('val_loss', loss, on_epoch=True)
+        self.log('val_acc', acc, prog_bar=True, on_epoch=True)
         return loss
 
     def test_step(self, batch, batch_idx):
