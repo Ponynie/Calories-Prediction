@@ -1,0 +1,3 @@
+last_drop: 0.2
+lr: 0.005
+num_classes: 18
