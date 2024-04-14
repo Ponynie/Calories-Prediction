@@ -1,10 +1,6 @@
 from torchvision import transforms
 import os
 
-data_dir = 'augmented'
-
-num_classes = len([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
-
 random_state = 42
 
 num_workers = int(os.cpu_count() / 2)

@@ -4,8 +4,15 @@ from PIL import Image
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 import properties as pt
+from argparse import ArgumentParser
 
-def test_load_data(data_dir):
+def test_load_data(args):
+    
+    if args.mode == 'real':
+        data_dir = 'augmented'
+    else:
+        data_dir = 'data'
+        
     image_paths = []
     labels = []
     class_dirs = [d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))]
@@ -43,5 +50,9 @@ def test_image_tranform(data: pd.DataFrame, transform=None):
     else:
         print(f"{success_count} images loaded and transformed successfully, {error_count} errors occurred.")
 
-tranform = pt.transform
-test_image_tranform(test_load_data(pt.data_dir), transform=tranform)
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    tranform = pt.transform
+    parser.add_argument("--mode", default=None)
+    args = parser.parse_args()
+    test_image_tranform(test_load_data(args), transform=tranform)
