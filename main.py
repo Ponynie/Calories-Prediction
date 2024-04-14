@@ -19,11 +19,18 @@ def train_model(hparams):
     
     num_classes = len([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
     
-    batch_size = hparams.batch_size
-    lr = hparams.lr
-    last_drop = hparams.last_drop
-    max_epochs = hparams.max_epochs
-    patience = hparams.patience
+    batch_size = int(hparams.batch_size)
+    lr = float(hparams.lr)
+    last_drop = float(hparams.last_drop)
+    max_epochs = int(hparams.max_epochs)
+    patience = int(hparams.patience)
+    
+    print(f"Training model with the following hyperparameters:\n"
+        f"   - Batch Size   : {batch_size}\n"
+        f"   - Learning Rate: {lr}\n"
+        f"   - Last Drop    : {last_drop}\n"
+        f"   - Max Epochs   : {max_epochs}\n"
+        f"   - Patience     : {patience}")
     
     random_state = pt.random_state
     num_workers = pt.num_workers
