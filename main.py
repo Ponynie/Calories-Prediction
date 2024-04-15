@@ -20,10 +20,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def train_model(hparams):
     
-    if hparams.data == 'real':
-        data_dir = 'augmented'
-    else:
-        data_dir = 'data'
+    data_dir = 'augmented'
     
     batch_size = int(hparams.batch_size)
     lr = float(hparams.lr)
@@ -117,7 +114,6 @@ if __name__ == '__main__':
     parser.add_argument("--patience", default=5)
     parser.add_argument("--lr_decay", default=1)
     parser.add_argument("--gamma", default=0.90)
-    parser.add_argument("--data", default=None)
     parser.add_argument("--mode", default='train')
     args = parser.parse_args()
     main(args)

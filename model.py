@@ -69,4 +69,5 @@ class MobileNetV2Lightning(pl.LightningModule):
         if self.lr_decay:
             lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=self.gamma)
             return [optimizer], [lr_scheduler]
-        return optimizer
+        else:
+            return optimizer
