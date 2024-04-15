@@ -55,7 +55,7 @@ def train_model(hparams):
     model = MobileNetV2Lightning(num_classes=data_module.num_classes, lr=lr, last_drop=last_drop, gamma=gamma)
     early_stopping = EarlyStopping(monitor='val_loss', patience=patience)
     lr_monitor = LearningRateMonitor(logging_interval='epoch')
-    wandb_logger = WandbLogger(project='wandb-lightning', job_type='train')
+    wandb_logger = WandbLogger(project='MLProject', job_type='train')
     
     trainer = Trainer(devices='auto', 
                       accelerator='auto', 
