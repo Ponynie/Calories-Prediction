@@ -81,7 +81,7 @@ def test_model():
     checkpoint_path = 'MLProject/jp5s24vj/checkpoints/epoch=29-step=3570.ckpt'
     model = MobileNetV2Lightning.load_from_checkpoint(checkpoint_path)
 
-    data_module = ImageDataModule(data_dir='', 
+    data_module = ImageDataModule(data_dir='augmented', 
                                  batch_size=32, 
                                  num_workers=pt.num_workers, 
                                  transform=pt.transform, 
