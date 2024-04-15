@@ -10,13 +10,13 @@ class ImagePredictionLogger(Callback):
         self.class_names = class_names
         
     def on_validation_epoch_end(self, trainer, pl_module):
-        # Bring the tensors to CPU
+
         val_imgs = self.val_imgs.to(device=pl_module.device)
         val_labels = self.val_labels.to(device=pl_module.device)
-        # Get model prediction
+
         logits = pl_module(val_imgs)
         preds = torch.argmax(logits, -1)
-        # Log the images as wandb Image
+
         trainer.logger.experiment.log({
             "examples":[wandb.Image(x, caption=f"Pred:{self.match_name(pred)}, Label:{self.match_name(y)}") 
                            for x, pred, y in zip(val_imgs[:self.num_samples], 
