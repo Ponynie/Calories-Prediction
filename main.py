@@ -3,10 +3,16 @@ import os
 from argparse import ArgumentParser
 
 # Third-party library imports
+from matplotlib.colors import LinearSegmentedColormap
+import numpy as np
+import torch
 from PIL import Image, ImageFile
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_lightning.loggers import WandbLogger
+from captum.attr import IntegratedGradients
+from captum.attr import visualization as viz
+from captum.attr import NoiseTunnel
 
 # Local imports
 import properties as pt
@@ -72,7 +78,7 @@ def train_model(hparams):
     trainer.fit(model, datamodule=data_module)
 
 def test_model():
-    checkpoint_path = ''
+    checkpoint_path = 'MLProject/jp5s24vj/checkpoints/epoch=29-step=3570.ckpt'
     model = MobileNetV2Lightning.load_from_checkpoint(checkpoint_path)
 
     data_module = ImageDataModule(data_dir='', 
@@ -86,21 +92,64 @@ def test_model():
     trainer = Trainer()
     trainer.test(model, datamodule=data_module)
 
-# def predict():
+def analyze_results():
+    checkpoint_path = 'MLProject/jp5s24vj/checkpoints/epoch=29-step=3570.ckpt'
+    model = MobileNetV2Lightning.load_from_checkpoint(checkpoint_path)
+    model.eval()
+    
+    image = Image.open('analyze/2-Klongphai-Farm-session-220786-Edit_augmented_4.jpg').convert('RGB')
+    image_tensor = pt.transform(image).unsqueeze(0)
+    
+    with torch.no_grad():
+        logits = model(image_tensor)
+    pred = torch.argmax(logits, dim=1).item()
 
-#     model = MobileNetV2Lightning.load_from_checkpoint(PATH)
-#     dataset = WikiText2()
-#     test_dataloader = DataLoader(dataset)
-#     trainer = L.Trainer()
-#     pred = trainer.predict(model, dataloaders=test_dataloader)
-
-#     return pred
+    integrated_gradients = IntegratedGradients(model)
+    attributions_ig = integrated_gradients.attribute(image_tensor, target=pred, n_steps=200)
+    default_cmap = LinearSegmentedColormap.from_list('custom blue', 
+                                                 [(0, '#ffffff'),
+                                                  (0.25, '#000000'),
+                                                  (1, '#000000')], N=256)
+    _ = viz.visualize_image_attr(np.transpose(attributions_ig.squeeze().cpu().detach().numpy(), (1,2,0)),
+                                 np.transpose(image_tensor.squeeze().cpu().detach().numpy(), (1,2,0)),
+                                 method='heat_map',
+                                 cmap=default_cmap,
+                                 show_colorbar=True,
+                                 sign='positive',
+                                 outlier_perc=1)
+    
+    noise_tunnel = NoiseTunnel(integrated_gradients)
+    attributions_ig_nt = noise_tunnel.attribute(image_tensor, nt_samples=10, nt_type='smoothgrad_sq', target=pred)
+    _ = viz.visualize_image_attr_multiple(np.transpose(attributions_ig_nt.squeeze().cpu().detach().numpy(), (1,2,0)),
+                                          np.transpose(image_tensor.squeeze().cpu().detach().numpy(), (1,2,0)),
+                                          ["original_image", "heat_map"],
+                                          ["all", "positive"],
+                                          cmap=default_cmap,
+                                          show_colorbar=True)
+        
+def predict_image(image_path):
+    food_list = ['frenchfries', 'gaithod', 'gaiyang', 'greencurry', 'hamburger', 'kaijjaw', 'kaomokgai', 'kapraomukrob', 'kapraomukrob_egg', 'kapraomusub', 'kapraomusub_egg', 'mamuang', 'padseaew', 'padthai', 'pizza', 'somtam', 'tomkha', 'tomyumkung']
+    checkpoint_path = 'MLProject/jp5s24vj/checkpoints/epoch=29-step=3570.ckpt'
+    model = MobileNetV2Lightning.load_from_checkpoint(checkpoint_path)
+    model.eval()
+    
+    image = Image.open(image_path).convert('RGB')
+    image_tensor = pt.transform(image).unsqueeze(0)
+    
+    with torch.no_grad():
+        logits = model(image_tensor)
+    pred = torch.argmax(logits, dim=1).item()
+    print(food_list[pred])
 
 def main(args):
     if args.mode == 'train':
         train_model(args)
     elif args.mode == 'test':
         test_model()
+    elif args.mode == 'analyze':
+        analyze_results()
+    elif args.mode == 'predict' and args.predict_dir is not None:
+        predict_image(args.predict_dir)
     else:
         raise ValueError(f"Invalid mode: {args.mode}")
     
@@ -114,7 +163,8 @@ if __name__ == '__main__':
     parser.add_argument("--patience", default=5)
     parser.add_argument("--lr_decay", default=1)
     parser.add_argument("--gamma", default=0.90)
-    parser.add_argument("--mode", default='train')
+    parser.add_argument("--mode", default='analyze')
+    parser.add_argument("--predict_dir", default=None)
     args = parser.parse_args()
     main(args)
 
