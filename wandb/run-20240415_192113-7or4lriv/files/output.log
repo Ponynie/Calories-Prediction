@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/root/Calories-Prediction/main.py", line 171, in <module>
+    main(args)
+  File "/root/Calories-Prediction/main.py", line 150, in main
+    test_model()
+  File "/root/Calories-Prediction/main.py", line 95, in test_model
+    trainer.test(model, datamodule=data_module)
+  File "/root/Calories-Prediction/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 754, in test
+    return call._call_and_handle_interrupt(
+  File "/root/Calories-Prediction/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 44, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/root/Calories-Prediction/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 794, in _test_impl
+    results = self._run(model, ckpt_path=ckpt_path)
+  File "/root/Calories-Prediction/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 949, in _run
+    call._call_setup_hook(self)  # allow user to set up LightningModule in accelerator environment
+  File "/root/Calories-Prediction/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 92, in _call_setup_hook
+    _call_lightning_datamodule_hook(trainer, "setup", stage=fn)
+  File "/root/Calories-Prediction/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 179, in _call_lightning_datamodule_hook
+    return fn(*args, **kwargs)
+  File "/root/Calories-Prediction/data_module.py", line 43, in setup
+    data = self.load_data()
+  File "/root/Calories-Prediction/data_module.py", line 67, in load_data
+    class_dirs = [d for d in os.listdir(self.data_dir) if os.path.isdir(os.path.join(self.data_dir, d))]
+FileNotFoundError: [Errno 2] No such file or directory: ''
