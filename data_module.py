@@ -63,9 +63,12 @@ class ImageDataModule(pl.LightningDataModule):
     def load_data(self):
         image_paths = []
         labels = []
+        
         class_dirs = [d for d in os.listdir(self.data_dir) if os.path.isdir(os.path.join(self.data_dir, d))]
-        self.num_classes = len(class_dirs)
         class_names = sorted(class_dirs)
+        
+        self.num_classes = len(class_dirs)
+        self.class_names = class_names
 
         for idx, class_name in enumerate(class_names):
             class_dir = os.path.join(self.data_dir, class_name)
