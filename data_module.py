@@ -1,12 +1,17 @@
+# Standard library imports
 import os
-import pandas as pd
 from typing import Optional
+
+# Third-party library imports
+import pandas as pd
 from sklearn.model_selection import train_test_split
-from PIL import Image
-from PIL import ImageFile
+from PIL import Image, ImageFile
 from torch.utils.data import DataLoader, Dataset
 import pytorch_lightning as pl
+
+# Adjusting PIL behavior
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 class ImageDataset(Dataset):
     def __init__(self, data: pd.DataFrame, transform=None):
         self.data = data
@@ -59,6 +64,7 @@ class ImageDataModule(pl.LightningDataModule):
         image_paths = []
         labels = []
         class_dirs = [d for d in os.listdir(self.data_dir) if os.path.isdir(os.path.join(self.data_dir, d))]
+        self.num_classes = len(class_dirs)
         class_names = sorted(class_dirs)
 
         for idx, class_name in enumerate(class_names):

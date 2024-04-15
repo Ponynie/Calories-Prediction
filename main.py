@@ -1,14 +1,24 @@
+# Standard library imports
+import os
+from argparse import ArgumentParser
+
+# Third-party library imports
+import torch
+import wandb
+from PIL import Image, ImageFile
+from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
+from pytorch_lightning.loggers import WandbLogger
+
+# Local imports
+import properties as pt
+from image_logger import ImagePredictionLogger
 from data_module import ImageDataModule
 from model import MobileNetV2Lightning
-from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
-from pytorch_lightning import Trainer
-import properties as pt
-from PIL import Image
-from PIL import ImageFile
+
+# Adjusting PIL behavior
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-import torch
-from argparse import ArgumentParser
-import os
+
 
 def train_model(hparams):
     
@@ -17,45 +27,46 @@ def train_model(hparams):
     else:
         data_dir = 'data'
     
-    num_classes = len([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
-    
     batch_size = int(hparams.batch_size)
     lr = float(hparams.lr)
     last_drop = float(hparams.last_drop)
     max_epochs = int(hparams.max_epochs)
     patience = int(hparams.patience)
+    gamma = float(hparams.gamma)
+
+    data_module = ImageDataModule(data_dir=data_dir, 
+                                 batch_size=batch_size, 
+                                 num_workers=pt.num_workers, 
+                                 transform=pt.transform, 
+                                 val_split=pt.val_split, 
+                                 test_split=pt.test_split, 
+                                 random_state=pt.random_state)
     
+    data_module.setup()
+    
+    val_samples = next(iter(data_module.val_dataloader()))
+    val_imgs, val_labels = val_samples[0], val_samples[1]
+
+    print(f"Train on {data_dir} data with {data_module.num_classes} classes")
     print(f"Training model with the following hyperparameters:\n"
         f"   - Batch Size   : {batch_size}\n"
         f"   - Learning Rate: {lr}\n"
         f"   - Last Drop    : {last_drop}\n"
         f"   - Max Epochs   : {max_epochs}\n"
-        f"   - Patience     : {patience}")
+        f"   - Patience     : {patience}\n"
+        f"   - Gamma        : {gamma}\n")
     
-    random_state = pt.random_state
-    num_workers = pt.num_workers
-    transform = pt.transform
-    val_split = pt.val_split
-    test_split = pt.test_split
-
-    data_module = ImageDataModule(data_dir=data_dir, 
-                                 batch_size=batch_size, 
-                                 num_workers=num_workers, 
-                                 transform=transform, 
-                                 val_split=val_split, 
-                                 test_split=test_split, 
-                                 random_state=random_state)
-    
-    model = MobileNetV2Lightning(num_classes=num_classes, lr=lr, last_drop=last_drop)
+    model = MobileNetV2Lightning(num_classes=data_module.num_classes, lr=lr, last_drop=last_drop, gamma=gamma)
     early_stopping = EarlyStopping(monitor='val_loss', patience=patience)
     lr_monitor = LearningRateMonitor(logging_interval='epoch')
+    wandb_logger = WandbLogger(project='wandb-lightning', job_type='train')
     
     trainer = Trainer(devices='auto', 
                       accelerator='auto', 
                       max_epochs=max_epochs,
-                      logger=True, 
+                      logger=wandb_logger, 
                       enable_checkpointing=True,
-                      callbacks=[lr_monitor, early_stopping])
+                      callbacks=[lr_monitor, early_stopping, ImagePredictionLogger(val_samples=val_samples)])
     
     trainer.fit(model, datamodule=data_module)
 
@@ -98,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument("--last_drop", default=0.2)
     parser.add_argument("--max_epochs", default=20)
     parser.add_argument("--patience", default=5)
+    parser.add_argument("--gamma", default=0.90)
     parser.add_argument("--data", default=None)
     parser.add_argument("--mode", default='train')
     args = parser.parse_args()
