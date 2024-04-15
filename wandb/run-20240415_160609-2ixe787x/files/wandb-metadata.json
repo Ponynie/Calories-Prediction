@@ -1,0 +1,233 @@
+{
+    "os": "Linux-5.4.0-173-generic-x86_64-with-glibc2.35",
+    "python": "3.10.13",
+    "heartbeatAt": "2024-04-15T16:06:10.428566",
+    "startedAt": "2024-04-15T16:06:09.554893",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--lr",
+        "0.001",
+        "--gamma",
+        "0.85"
+    ],
+    "state": "running",
+    "program": "/root/Calories-Prediction/main.py",
+    "codePathLocal": "main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://Ponynie:@github.com/Ponynie/Calories-Prediction.git",
+        "commit": "69c199bbba9dacd792824d72fac1812b2d50953d"
+    },
+    "email": "Phichaphop.ruksaboon@gmail.com",
+    "root": "/root/Calories-Prediction",
+    "host": "b2de314ee576",
+    "username": "root",
+    "executable": "/root/Calories-Prediction/env/bin/python",
+    "cpu_count": 18,
+    "cpu_count_logical": 36,
+    "cpu_freq": {
+        "current": 1508.6823611111108,
+        "min": 1200.0,
+        "max": 4633.333333333333
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3009.607,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 1577.451,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.526,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.069,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.174,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.569,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.36,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.194,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.153,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.288,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.409,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.586,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1277.532,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.279,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4290.982,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 1200.144,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.16,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 2930.533,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 1507.693,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.192,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.182,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.799,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1201.049,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.146,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1201.137,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.14,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.193,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.11,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.794,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.754,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1359.699,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 1200.75,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3800.937,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 1201.3,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1201.414,
+            "min": 1200.0,
+            "max": 4600.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 16.0,
+            "used": 11.656578063964844
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3090",
+            "memory_total": 25769803776
+        }
+    ],
+    "memory": {
+        "total": 125.48487854003906
+    }
+}
