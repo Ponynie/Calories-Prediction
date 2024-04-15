@@ -31,7 +31,7 @@ def train_model(hparams):
     max_epochs = int(hparams.max_epochs)
     patience = int(hparams.patience)
     gamma = float(hparams.gamma)
-    lr_decay = bool(hparams.lr_decay)
+    lr_decay = bool(int(hparams.lr_decay))
 
     data_module = ImageDataModule(data_dir=data_dir, 
                                  batch_size=batch_size, 
@@ -54,26 +54,29 @@ def train_model(hparams):
         f"   - LR Decay     : {lr_decay}\n"
         f"   - Gamma        : {gamma}\n")
     
-    model = MobileNetV2Lightning(num_classes=data_module.num_classes, lr=lr, last_drop=last_drop, lr_decay=lr_decay, gamma=gamma)
+    model = MobileNetV2Lightning(num_classes=data_module.num_classes, 
+                                 lr=lr, 
+                                 last_drop=last_drop, 
+                                 lr_decay=lr_decay, 
+                                 gamma=gamma)
+    
     early_stopping = EarlyStopping(monitor='val_loss', patience=patience)
     lr_monitor = LearningRateMonitor(logging_interval='epoch')
     wandb_logger = WandbLogger(project='MLProject', job_type='train')
+    image_logger = ImagePredictionLogger(val_samples=val_samples, num_samples=32, class_names=data_module.class_names)
     
     trainer = Trainer(devices='auto', 
                       accelerator='auto', 
                       max_epochs=max_epochs,
                       logger=wandb_logger, 
                       enable_checkpointing=True,
-                      callbacks=[lr_monitor, early_stopping, ImagePredictionLogger(val_samples=val_samples, num_samples=32, class_names=data_module.class_names)])
+                      callbacks=[lr_monitor, early_stopping, image_logger])
     
     trainer.fit(model, datamodule=data_module)
 
 def test_model():
-    model = MobileNetV2Lightning.load_from_checkpoint(
-        checkpoint_path='',
-        hparams_file='',
-        map_location=None,
-    )
+    checkpoint_path = ''
+    model = MobileNetV2Lightning.load_from_checkpoint(checkpoint_path)
 
     data_module = ImageDataModule(data_dir='', 
                                  batch_size=32, 
@@ -84,7 +87,6 @@ def test_model():
                                  random_state=pt.random_state)
 
     trainer = Trainer()
-    
     trainer.test(model, datamodule=data_module)
 
 # def predict():
@@ -113,7 +115,7 @@ if __name__ == '__main__':
     parser.add_argument("--last_drop", default=0.2)
     parser.add_argument("--max_epochs", default=20)
     parser.add_argument("--patience", default=5)
-    parser.add_argument("--lr_decay", default=True)
+    parser.add_argument("--lr_decay", default=1)
     parser.add_argument("--gamma", default=0.90)
     parser.add_argument("--data", default=None)
     parser.add_argument("--mode", default='train')
