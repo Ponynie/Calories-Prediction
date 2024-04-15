@@ -88,8 +88,10 @@ def test_model():
                                  val_split=pt.val_split, 
                                  test_split=pt.test_split, 
                                  random_state=pt.random_state)
-
-    trainer = Trainer()
+    
+    wandb_logger = WandbLogger(project='MLProject', job_type='test')
+    
+    trainer = Trainer(logger=wandb_logger, devices='auto', accelerator='auto')
     trainer.test(model, datamodule=data_module)
 
 def analyze_results():
@@ -163,7 +165,7 @@ if __name__ == '__main__':
     parser.add_argument("--patience", default=5)
     parser.add_argument("--lr_decay", default=1)
     parser.add_argument("--gamma", default=0.90)
-    parser.add_argument("--mode", default='analyze')
+    parser.add_argument("--mode", default='test')
     parser.add_argument("--predict_dir", default=None)
     args = parser.parse_args()
     main(args)
