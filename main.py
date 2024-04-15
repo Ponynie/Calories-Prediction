@@ -3,8 +3,6 @@ import os
 from argparse import ArgumentParser
 
 # Third-party library imports
-import torch
-import wandb
 from PIL import Image, ImageFile
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
@@ -43,9 +41,7 @@ def train_model(hparams):
                                  random_state=pt.random_state)
     
     data_module.setup()
-    
     val_samples = next(iter(data_module.val_dataloader()))
-    val_imgs, val_labels = val_samples[0], val_samples[1]
 
     print(f"Train on {data_dir} data with {data_module.num_classes} classes")
     print(f"Training model with the following hyperparameters:\n"
@@ -72,12 +68,18 @@ def train_model(hparams):
 
 def test_model():
     model = MobileNetV2Lightning.load_from_checkpoint(
-        checkpoint_path="lightning_logs/version_1/checkpoints/epoch=13-step=28.ckpt",
-        hparams_file="lightning_logs/version_1/hparams.yaml",
+        checkpoint_path='',
+        hparams_file='',
         map_location=None,
     )
 
-    data_module = None # Load the data module here
+    data_module = ImageDataModule(data_dir='', 
+                                 batch_size=32, 
+                                 num_workers=pt.num_workers, 
+                                 transform=pt.transform, 
+                                 val_split=pt.val_split, 
+                                 test_split=pt.test_split, 
+                                 random_state=pt.random_state)
 
     trainer = Trainer()
     

@@ -1,10 +1,8 @@
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torchmetrics
 from torchvision.models import mobilenet_v2
-import wandb
 
 class MobileNetV2Lightning(pl.LightningModule):
     def __init__(self, num_classes, lr=0.001, last_drop=0.2, gamma=0.90):
