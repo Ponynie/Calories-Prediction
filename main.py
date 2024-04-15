@@ -143,6 +143,17 @@ def predict_image(image_path):
     pred = torch.argmax(logits, dim=1).item()
     print(food_list[pred])
 
+def export_model():
+    from torch.utils.mobile_optimizer import optimize_for_mobile
+    
+    checkpoint_path = 'MLProject/jp5s24vj/checkpoints/epoch=29-step=3570.ckpt'
+    model = MobileNetV2Lightning.load_from_checkpoint(checkpoint_path)
+    
+    example_input = torch.rand(1, 3, 224, 224)
+    traced_module = model.to_torchscript(method='trace', example_inputs=example_input)
+    optimized_model = optimize_for_mobile(traced_module)
+    optimized_model.save('model.pt')
+
 def main(args):
     if args.mode == 'train':
         train_model(args)
@@ -152,6 +163,8 @@ def main(args):
         analyze_results()
     elif args.mode == 'predict' and args.predict_dir is not None:
         predict_image(args.predict_dir)
+    elif args.mode == 'export':
+        export_model()
     else:
         raise ValueError(f"Invalid mode: {args.mode}")
     
@@ -165,7 +178,7 @@ if __name__ == '__main__':
     parser.add_argument("--patience", default=5)
     parser.add_argument("--lr_decay", default=1)
     parser.add_argument("--gamma", default=0.90)
-    parser.add_argument("--mode", default='test')
+    parser.add_argument("--mode", default='export')
     parser.add_argument("--predict_dir", default=None)
     args = parser.parse_args()
     main(args)
