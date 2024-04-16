@@ -179,7 +179,7 @@ if __name__ == '__main__':
     parser.add_argument("--patience", default=5)
     parser.add_argument("--lr_decay", default=1)
     parser.add_argument("--gamma", default=0.90)
-    parser.add_argument("--mode", default='predict')
+    parser.add_argument("--mode", default='train')
     parser.add_argument("--predict_path", default=None)
     args = parser.parse_args()
     main(args)
