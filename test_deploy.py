@@ -3,7 +3,6 @@ from PIL import Image
 import torch
 from torchvision import transforms
 
-
 model = jit.load('model.pt')
 
 transform = transforms.Compose([
@@ -31,7 +30,7 @@ food_list = ['frenchfries',
              'tomkha', 
              'tomyumkung']
 
-image_path = 'analyze/source_image/2-Klongphai-Farm-session-220786-Edit_augmented_4.jpg' #ใส่ PATH ตรงนี้
+image_path = 'deploy_example/burger2.jpg' #ใส่ PATH ตรงนี้
 image = Image.open(image_path).convert('RGB')
 image_tensor = transform(image).unsqueeze(0)
 
