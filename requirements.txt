@@ -1,0 +1,10 @@
+numpy
+torch
+torchvision
+pytorch-lightning
+captum
+scikit-learn
+pandas
+matplotlib
+pillow
+torchmetrics
