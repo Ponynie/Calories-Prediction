@@ -4,6 +4,8 @@ This repository contains code for a food classification model built using PyTorc
 
 **Note:** The finished model and a web app for calorie prediction using the model are available in a separate repository: [Calorify](https://github.com/Ponynie/Calorify.git)
 
+You can view the training report of loss, validation metrics, etc. for the model in this project at [https://api.wandb.ai/links/earthcq/iuwopqy8](https://api.wandb.ai/links/earthcq/iuwopqy8).
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -11,7 +13,6 @@ This repository contains code for a food classification model built using PyTorc
 - [Customizing the Dataset](#customizing-the-dataset)
 - [Updating Checkpoints and Prediction Classes](#updating-checkpoints-and-prediction-classes)
 - [Project Structure](#project-structure)
-- [Contributing](#contributing)
 - [Credits](#credits)
 - [License](#license)
 
@@ -73,8 +74,15 @@ The project provides several modes for training, testing, analyzing, and predict
 
 3. **Analyzing**: To analyze the model's predictions and visualize the attributions, run:
 
-   ```ash
+   ```bash
    python main.py --mode analyze
+   ```
+
+   Note: In the `analyze_results()` function, you need to replace the image path with the path of the image you want to analyze the attributions for.
+
+   ```python
+       image = Image.open('path/to/your/image.jpg').convert('RGB')
+       # ... (rest of the function)
    ```
 
 4. **Predicting**: To predict the class of a given image, run:
